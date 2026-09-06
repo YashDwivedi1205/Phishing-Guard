@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scan Results — PhishGuard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo-mark"></div>
+      <span>PhishGuard</span>
+    </header>
+
+    <h1>Scan complete.</h1>
+    <p class="lede">{{ total }} rows analyzed. Here's the breakdown, with a preview below.</p>
+
+    <div class="summary-row">
+      <div class="summary-card">
+        <div class="summary-num">{{ total }}</div>
+        <div class="summary-label">Total scanned</div>
+      </div>
+      <div class="summary-card safe">
+        <div class="summary-num">{{ safe_count }}</div>
+        <div class="summary-label">Safe &middot; {{ safe_pct }}%</div>
+      </div>
+      <div class="summary-card danger">
+        <div class="summary-num">{{ phishing_count }}</div>
+        <div class="summary-label">Phishing &middot; {{ phishing_pct }}%</div>
+      </div>
+    </div>
+
+    <div class="console">
+      <div class="console-status">
+        <span class="dot"></span>
+        {% if showing_preview %}showing first 50 of {{ total }} rows{% else %}showing all {{ total }} rows{% endif %}
+      </div>
+      <div class="console-body no-pad">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>Row</th>
+              <th>Result</th>
+              <th>Confidence</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+            <tr>
+              <td class="mono">{{ row.row_no }}</td>
+              <td>
+                <span class="badge {{ 'badge-safe' if row.Result == 'safe' else 'badge-danger' }}">
+                  {{ row.Result }}
+                </span>
+              </td>
+              <td class="mono">{{ row.Confidence }}%</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="actions-row">
+      <a href="/download" class="btn-primary">Download full CSV</a>
+      <a href="/" class="btn-ghost">Scan another file</a>
+    </div>
+
+    <footer>phishing-classifier &middot; local model v1</footer>
+  </div>
+</body>
+</html>

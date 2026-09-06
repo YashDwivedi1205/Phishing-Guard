@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard - Website Phishing Detector</title>
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/style.css') }}">
+</head>
+<body>
+    <div class="wrap">
+        <header>
+            <div class="logo-mark"></div>
+            <span>PhishGuard</span>
+        </header>
+
+        <h1>Find out which of your links are Phishing.</h1>
+        <p class="lede">
+            Upload a CSV of website features and get each row scored as <strong>safe</strong> or <strong>Phishing</strong>
+            - powered by a model trained on 30 structural and behavioral signals.
+        </p>
+        <div class="console">
+            <div class="console-status">
+                <span class="dot"></span>
+                model: ready . awaiting file
+            </div>
+            <div class="console-body">
+                <form action="/predict" method="post" enctype="multipart/form-data" id="predict-form">
+                    <div class="dropzone" id="dropzone">
+                        <div class="corner tl"> </div>
+                        <div class="corner tr"> </div>
+                        <div class="corner bl"> </div>
+                        <div class="corner br"> </div>
+
+                        <svg viewbox = "0 0 24 24" fill = "none" troke="currentColor" stroke-width="1.5">
+              <path d="M12 16V4m0 0L7 9m5-5l5 5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+ 
+            <div class="dropzone-label">Drop your CSV here, or click to browse</div>
+            <div class="dropzone-sub">.csv &middot; feature columns, no target</div>
+ 
+            <input type="file" name="file" id="file-input" class="file-input" accept=".csv" required>
+          </div>
+ 
+          <div class="filename-chip" id="filename-chip"></div>
+ 
+          <div class="submit-row">
+            <button type="submit" id="submit-btn">Scan file</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <details class="schema">
+      <summary>
+        <span>Required columns</span>
+        <span class="schema-count">30</span>
+      </summary>
+      <div class="schema-body">
+        <p class="schema-note">Your CSV needs exactly these columns (no target column) — same order isn't required.</p>
+        <div class="schema-grid">
+          <span>having_IP_Address</span><span>URL_Length</span><span>Shortining_Service</span>
+          <span>having_At_Symbol</span><span>double_slash_redirecting</span><span>Prefix_Suffix</span>
+          <span>having_Sub_Domain</span><span>SSLfinal_State</span><span>Domain_registeration_length</span>
+          <span>Favicon</span><span>port</span><span>HTTPS_token</span>
+          <span>Request_URL</span><span>URL_of_Anchor</span><span>Links_in_tags</span>
+          <span>SFH</span><span>Submitting_to_email</span><span>Abnormal_URL</span>
+          <span>Redirect</span><span>on_mouseover</span><span>RightClick</span>
+          <span>popUpWidnow</span><span>Iframe</span><span>age_of_domain</span>
+          <span>DNSRecord</span><span>web_traffic</span><span>Page_Rank</span>
+          <span>Google_Index</span><span>Links_pointing_to_page</span><span>Statistical_report</span>
+        </div>
+      </div>
+    </details>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">Upload</div>
+        <div class="step-text">Add a CSV with the 30 website features, one row per site.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">Analyze</div>
+        <div class="step-text">The trained model scores every row in a single pass.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">Download</div>
+        <div class="step-text">Get the same CSV back with a result column added.</div>
+      </div>
+    </div>
+ 
+    <footer>phishing-classifier &middot; local model v1</footer>
+  </div>
+ 
+  <script>
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('file-input');
+    const chip = document.getElementById('filename-chip');
+    const form = document.getElementById('predict-form');
+    const submitBtn = document.getElementById('submit-btn');
+ 
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) {
+        chip.textContent = fileInput.files[0].name;
+        chip.classList.add('show');
+      }
+    });
+ 
+    ['dragenter', 'dragover'].forEach(evt =>
+      dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('is-dragover');
+      })
+    );
+ 
+    ['dragleave', 'drop'].forEach(evt =>
+      dropzone.addEventListener(evt, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('is-dragover');
+      })
+    );
+ 
+    dropzone.addEventListener('drop', (e) => {
+      const dropped = e.dataTransfer.files;
+      if (dropped.length) {
+        fileInput.files = dropped;
+        chip.textContent = dropped[0].name;
+        chip.classList.add('show');
+      }
+    });
+ 
+ form.addEventListener('submit', () => {
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Analyzing…';
+});
+  </script>
+</body>
+</html>

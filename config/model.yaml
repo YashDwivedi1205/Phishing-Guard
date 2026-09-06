@@ -1,0 +1,36 @@
+model_selection:
+  model:
+    XGBClassifier:
+      search_param_grid:
+        max_depth:
+          - 3
+          - 5
+          - 7
+        n_estimators:
+          - 50
+          - 100
+          - 130
+        random_state:
+          - 0
+          - 42
+
+    GaussianNB:
+      search_param_grid:
+        var_smoothing:
+          - 0.5
+          - 0.05
+          - 0.01
+
+    LogisticRegression:
+      search_param_grid:
+        C:
+          - 500
+          - 1000
+        max_iter:
+          - 100
+          - 113
+        penalty:
+          - 'l2'
+        solver:
+          - 'lbfgs'
+          - 'liblinear'
